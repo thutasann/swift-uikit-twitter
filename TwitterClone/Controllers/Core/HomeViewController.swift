@@ -9,6 +9,11 @@ import UIKit
 
 class HomeViewController: UIViewController {
     
+    // NavigationBar Configuration
+    private func configureNavigationBar(){
+        
+    }
+    
     
     // TimeLine (Feed) Table View
     private let timelineTableView: UITableView = {
@@ -35,7 +40,7 @@ class HomeViewController: UIViewController {
     
 }
 
-
+// UI Table Extension
 extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     
     // Number of Rows In Sections
@@ -48,8 +53,28 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: TweetTableViewCell.identifier, for: indexPath) as? TweetTableViewCell else{
             return UITableViewCell()
         }
+        cell.delegate = self
         return cell
     }
  
 
+}
+
+// To Test Action Buttons in Each Tweet
+extension HomeViewController: TweetTableViewCellDelegate{
+    func tweetTableViewCellDidTapReply() {
+        print("Reply")
+    }
+    
+    func tweetTableViewCellDidTapRetweet() {
+        print("ReTweet")
+    }
+    
+    func tweetTableViewCellDidTapLike() {
+        print("Like")
+    }
+    
+    func tweetTableViewCellDidTapShare() {
+        print("Share")
+    }
 }
