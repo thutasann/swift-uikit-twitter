@@ -9,11 +9,28 @@ import UIKit
 
 class HomeViewController: UIViewController {
     
-    // NavigationBar Configuration
+    // NavigationBar Configuration to display the logo on the Top of the Phone
     private func configureNavigationBar(){
+        let size: CGFloat = 33
+        let logoImageView = UIImageView(frame: CGRect(x: 0, y: 0, width: size, height: size))
+        logoImageView.contentMode = .scaleAspectFill
+        logoImageView.image = UIImage(named: "twitterLogo")
         
+        let middleView = UIView(frame: CGRect(x: 0, y: 0, width: size, height: size))
+        middleView.addSubview(logoImageView)
+        
+        navigationItem.titleView = middleView
+        
+        // profile image
+        let profileImage = UIImage(systemName: "person")
+        navigationItem.leftBarButtonItem = UIBarButtonItem(image: profileImage, style: .plain, target: self, action: #selector(didTapProfile))
     }
     
+    // Tap Function Upon Profile Icon
+    @objc private func didTapProfile(){
+        let vc = ProfileViewController()
+        navigationController?.pushViewController(vc, animated: true)
+    }
     
     // TimeLine (Feed) Table View
     private let timelineTableView: UITableView = {
@@ -28,6 +45,7 @@ class HomeViewController: UIViewController {
         view.addSubview(timelineTableView)
         timelineTableView.delegate = self
         timelineTableView.dataSource = self
+        configureNavigationBar()
     }
     
     // View Did Layout
