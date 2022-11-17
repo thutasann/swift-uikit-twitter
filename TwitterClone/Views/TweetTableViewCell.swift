@@ -37,7 +37,7 @@ class TweetTableViewCell: UITableViewCell {
         imageView.layer.masksToBounds = true
         imageView.image = UIImage(systemName: "person")
         imageView.backgroundColor = .gray
-        imageView.tintColor = .black
+        imageView.tintColor = .white
         return imageView
     }()
     
