@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import FirebaseAuth
 
 class HomeViewController: UIViewController {
     
@@ -61,6 +62,15 @@ class HomeViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.navigationBar.isHidden = false
+        
+        
+        // Authentication Check
+        if Auth.auth().currentUser == nil {
+            let vc = UINavigationController(rootViewController: OnboardingUIViewController());
+            vc.modalPresentationStyle = .fullScreen
+            present(vc, animated: false)
+        }
+        
     }
     
 }
