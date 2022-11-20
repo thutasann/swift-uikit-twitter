@@ -6,8 +6,13 @@
 //
 
 import UIKit
+import Combine
 
 class RegisterViewController: UIViewController {
+    
+    // View Model
+    private var viewModel = RegisterViewViewModel()
+    private var subscriptions: Set<AnyCancellable> = []
     
     // Register Label
     private let registerTitleLabel : UILabel = {
@@ -52,8 +57,45 @@ class RegisterViewController: UIViewController {
         button.backgroundColor = UIColor(red: 29/255, green: 161/255, blue: 242/255, alpha: 1)
         button.layer.masksToBounds = true
         button.layer.cornerRadius = 25
+        button.isEnabled = false
+        button.alpha = 0.5
         return button;
     }()
+    
+    // Email Text Field Onchage
+    @objc private func didChangeEmailField(){
+        viewModel.email = emailTextField.text;
+        viewModel.validateRegisrationForm()
+    }
+    
+    // Password Text Field Onchange
+    @objc private func didChangePasswordField(){
+        viewModel.password = passwordTextField.text;
+        viewModel.validateRegisrationForm()
+    }
+    
+    // Bind Views with @RegisterViewViewModel
+    private func bindViews(){
+        emailTextField.addTarget(self, action: #selector(didChangeEmailField), for: .editingChanged)
+        passwordTextField.addTarget(self, action: #selector(didChangePasswordField), for: .editingChanged)
+        viewModel.$isRegistrationFormValid.sink{ [weak self] validationState in
+            self?.registerButton.isEnabled = validationState
+            self?.registerButton.alpha = 1
+        }
+        .store(in: &subscriptions)
+        
+        viewModel.$user.sink { [weak self] user in
+            print(user)
+        }
+        .store(in: &subscriptions)
+    }
+    
+    
+    // For Button Disabled/Enabled
+    @objc private func didTapToDismiss(){
+        view.endEditing(true)
+    }
+
     
     // View Did Load
     override func viewDidLoad() {
@@ -65,8 +107,18 @@ class RegisterViewController: UIViewController {
         view.addSubview(emailTextField)
         view.addSubview(passwordTextField)
         view.addSubview(registerButton)
+        registerButton.addTarget(self, action: #selector(didTapRegister), for: .touchUpInside)
         
         configureConstraints()
+        
+        // Add Gesture Recognizer
+        view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(didTapToDismiss)))
+        bindViews()
+    }
+    
+    // Register Handle OnTap Func
+    @objc private func didTapRegister(){
+        viewModel.createUser()
     }
     
     
