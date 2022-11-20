@@ -22,7 +22,6 @@ final class AuthenticationViewViewModel: ObservableObject {
     // subscription
     private var subscriptions: Set<AnyCancellable> = [];
     
-    
     // Registration Form Validation
     func validateAuthenticationForm(){
         
@@ -43,22 +42,35 @@ final class AuthenticationViewViewModel: ObservableObject {
         return emailPred.evaluate(with: email)
     }
     
-    
-    // Create User
+    // Create User in Firebase Authentication
     func createUser(){
             
         guard let email = email,
               let password = password else {return}
         
         AuthManager.shared.registerUser(with: email, password: password)
+            .handleEvents(receiveOutput: { [weak self] user in // Save User to FireStore
+                self?.user = user;
+            })
             .sink { [weak self] completion in
-                
                 if case .failure(let error) = completion{
                     self?.error = error.localizedDescription // error.localizedDescription -> From Firebase
                 }
-                
             } receiveValue: { [weak self] user in
-                self?.user = user
+                self?.createRecord(for: user)
+            }
+            .store(in: &subscriptions)
+    }
+    
+    // Record User Data in Firestore
+    func createRecord(for user: User){
+        DatabaseManager.shared.collectionUsers(add: user)
+            .sink { [weak self] completion in
+                if case .failure(let error) = completion{
+                    self?.error = error.localizedDescription
+                }
+            } receiveValue: { state in
+                print("Adding User Record to database: \(state)")
             }
             .store(in: &subscriptions)
     }

@@ -7,8 +7,13 @@
 
 import UIKit
 import FirebaseAuth
+import Combine
 
 class HomeViewController: UIViewController {
+    
+    // ViewModel
+    private var viewModel = HomeViewViewModel();
+    private var subscriptions: Set<AnyCancellable> = [];
     
     // NavigationBar Configuration to display the logo on the Top of the Phone
     private func configureNavigationBar(){
@@ -48,6 +53,7 @@ class HomeViewController: UIViewController {
         timelineTableView.dataSource = self
         configureNavigationBar()
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "rectangle.portrait.and.arrow.right"), style: .plain, target: self, action: #selector(didTapSignOut))
+        bindViews()
     }
     
     
@@ -81,8 +87,27 @@ class HomeViewController: UIViewController {
         super.viewWillAppear(animated)
         navigationController?.navigationBar.isHidden = false
         handleAuthentication()
+        viewModel.retrieveUser() // Retrieve Loginned User
     }
     
+    // To check UserOnboarding is completed or not
+    func completeUserOnboarding(){
+        let vc = ProfileDataFormViewController();
+        present(vc, animated: true)
+    }
+    
+    // Bind Views with ViewModel
+    func bindViews(){
+        viewModel.$user.sink { [weak self] user in
+            guard let user = user else { return }
+            if !user.isUserOnboarded{
+                self?.completeUserOnboarding()
+            }
+        }
+        .store(in: &subscriptions)
+
+    }
+     
 }
 
 // UI Table Extension
