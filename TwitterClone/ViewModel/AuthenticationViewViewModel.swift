@@ -17,6 +17,7 @@ final class AuthenticationViewViewModel: ObservableObject {
     @Published var password: String?
     @Published var isAuthenticationFormValid: Bool = false
     @Published var user: User?
+    @Published var error: String?
     
     // subscription
     private var subscriptions: Set<AnyCancellable> = [];
@@ -50,7 +51,11 @@ final class AuthenticationViewViewModel: ObservableObject {
               let password = password else {return}
         
         AuthManager.shared.registerUser(with: email, password: password)
-            .sink { _ in
+            .sink { [weak self] completion in
+                
+                if case .failure(let error) = completion{
+                    self?.error = error.localizedDescription // error.localizedDescription -> From Firebase
+                }
                 
             } receiveValue: { [weak self] user in
                 self?.user = user
@@ -64,7 +69,11 @@ final class AuthenticationViewViewModel: ObservableObject {
               let password = password else { return }
         
         AuthManager.shared.loginUser(with: email, password: password)
-            .sink{ _ in
+            .sink{ [weak self] completion in
+                
+                if case .failure(let error) = completion{
+                    self?.error = error.localizedDescription
+                }
                 
             } receiveValue: { [weak self] user in
                 self?.user = user
