@@ -42,7 +42,7 @@ class OnboardingUIViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.tintColor = .gray
         label.text = "Have an account already?"
-        label.font = .systemFont(ofSize: 14, weight: .regular)
+        label.font = .systemFont(ofSize: 16, weight: .regular)
         return label;
     }()
     
@@ -51,7 +51,7 @@ class OnboardingUIViewController: UIViewController {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("Login", for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 14)
+        button.titleLabel?.font = .systemFont(ofSize: 16)
         button.tintColor = UIColor(red: 29/255, green: 161/255, blue: 242/255, alpha: 1)
         return button;
     }()
@@ -68,6 +68,7 @@ class OnboardingUIViewController: UIViewController {
         view.addSubview(loginButton)
         
         createAccountButton.addTarget(self, action: #selector(didTapCreateAccount), for: .touchUpInside)
+        loginButton.addTarget(self, action: #selector(didTapLogin), for: .touchUpInside)
         
         configureConstraints()
     }
@@ -75,6 +76,12 @@ class OnboardingUIViewController: UIViewController {
     // create account view browse Func
     @objc private func didTapCreateAccount(){
         let vc = RegisterViewController();
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    // Login View browse Func
+    @objc private func didTapLogin(){
+        let vc = LoginViewController();
         navigationController?.pushViewController(vc, animated: true)
     }
     
@@ -95,7 +102,7 @@ class OnboardingUIViewController: UIViewController {
         
         let promptLabelConstraints = [
             promptLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            promptLabel.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -60)
+            promptLabel.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -80)
         ];
         
         let loginButtonConstraints = [

@@ -11,11 +11,11 @@ import Firebase
 import Combine
 
 
-final class RegisterViewViewModel: ObservableObject {
+final class AuthenticationViewViewModel: ObservableObject {
     
     @Published var email: String?
     @Published var password: String?
-    @Published var isRegistrationFormValid: Bool = false
+    @Published var isAuthenticationFormValid: Bool = false
     @Published var user: User?
     
     // subscription
@@ -23,15 +23,15 @@ final class RegisterViewViewModel: ObservableObject {
     
     
     // Registration Form Validation
-    func validateRegisrationForm(){
+    func validateAuthenticationForm(){
         
         guard let email = email,
               let password = password else{
-            isRegistrationFormValid = false;
+            isAuthenticationFormValid = false;
             return
         }
         
-        isRegistrationFormValid = isValidEmail(email) && password.count >= 8;
+        isAuthenticationFormValid = isValidEmail(email) && password.count >= 8;
     }
     
     // Email Validation
@@ -51,6 +51,20 @@ final class RegisterViewViewModel: ObservableObject {
         
         AuthManager.shared.registerUser(with: email, password: password)
             .sink { _ in
+                
+            } receiveValue: { [weak self] user in
+                self?.user = user
+            }
+            .store(in: &subscriptions)
+    }
+    
+    // Login User
+    func loginUser(){
+        guard let email = email,
+              let password = password else { return }
+        
+        AuthManager.shared.loginUser(with: email, password: password)
+            .sink{ _ in
                 
             } receiveValue: { [weak self] user in
                 self?.user = user

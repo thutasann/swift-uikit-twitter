@@ -10,8 +10,9 @@
 		6B2348E22926232C000E6FD9 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6B2348E12926232B000E6FD9 /* GoogleService-Info.plist */; };
 		6B80EE0C292646010027BF77 /* OnboardingUIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B80EE0B292646010027BF77 /* OnboardingUIViewController.swift */; };
 		6B80EE0E2927127E0027BF77 /* RegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B80EE0D2927127E0027BF77 /* RegisterViewController.swift */; };
-		6B80EE11292732F10027BF77 /* RegisterViewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B80EE10292732F10027BF77 /* RegisterViewViewModel.swift */; };
+		6B80EE11292732F10027BF77 /* AuthenticationViewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B80EE10292732F10027BF77 /* AuthenticationViewViewModel.swift */; };
 		6B80EE142928F9790027BF77 /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B80EE132928F9790027BF77 /* AuthManager.swift */; };
+		6B80EE162929EB8F0027BF77 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B80EE152929EB8F0027BF77 /* LoginViewController.swift */; };
 		6B9F9ADF2923F1D00071BB05 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B9F9ADE2923F1D00071BB05 /* HomeViewController.swift */; };
 		6B9F9AE12923F2460071BB05 /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B9F9AE02923F2460071BB05 /* SearchViewController.swift */; };
 		6B9F9AE32923F2600071BB05 /* NotificationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B9F9AE22923F2600071BB05 /* NotificationsViewController.swift */; };
@@ -39,8 +40,9 @@
 		6B2348E12926232B000E6FD9 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		6B80EE0B292646010027BF77 /* OnboardingUIViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingUIViewController.swift; sourceTree = "<group>"; };
 		6B80EE0D2927127E0027BF77 /* RegisterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterViewController.swift; sourceTree = "<group>"; };
-		6B80EE10292732F10027BF77 /* RegisterViewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterViewViewModel.swift; sourceTree = "<group>"; };
+		6B80EE10292732F10027BF77 /* AuthenticationViewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationViewViewModel.swift; sourceTree = "<group>"; };
 		6B80EE132928F9790027BF77 /* AuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
+		6B80EE152929EB8F0027BF77 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		6B9F9ADE2923F1D00071BB05 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		6B9F9AE02923F2460071BB05 /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 		6B9F9AE22923F2600071BB05 /* NotificationsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsViewController.swift; sourceTree = "<group>"; };
@@ -82,6 +84,7 @@
 			children = (
 				6B80EE0B292646010027BF77 /* OnboardingUIViewController.swift */,
 				6B80EE0D2927127E0027BF77 /* RegisterViewController.swift */,
+				6B80EE152929EB8F0027BF77 /* LoginViewController.swift */,
 			);
 			path = Onboarding;
 			sourceTree = "<group>";
@@ -89,7 +92,7 @@
 		6B80EE0F292732BF0027BF77 /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
-				6B80EE10292732F10027BF77 /* RegisterViewViewModel.swift */,
+				6B80EE10292732F10027BF77 /* AuthenticationViewViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -262,11 +265,12 @@
 				6B9F9AE12923F2460071BB05 /* SearchViewController.swift in Sources */,
 				6BA99F592923EEDA00271043 /* MainTabbarViewController.swift in Sources */,
 				6B80EE0C292646010027BF77 /* OnboardingUIViewController.swift in Sources */,
+				6B80EE162929EB8F0027BF77 /* LoginViewController.swift in Sources */,
 				6B80EE0E2927127E0027BF77 /* RegisterViewController.swift in Sources */,
 				6BA99F552923EEDA00271043 /* AppDelegate.swift in Sources */,
 				6B9F9AE32923F2600071BB05 /* NotificationsViewController.swift in Sources */,
 				6BA99F572923EEDA00271043 /* SceneDelegate.swift in Sources */,
-				6B80EE11292732F10027BF77 /* RegisterViewViewModel.swift in Sources */,
+				6B80EE11292732F10027BF77 /* AuthenticationViewViewModel.swift in Sources */,
 				6B9F9ADF2923F1D00071BB05 /* HomeViewController.swift in Sources */,
 				6B9F9AEB292473F30071BB05 /* ProfileViewController.swift in Sources */,
 				6B80EE142928F9790027BF77 /* AuthManager.swift in Sources */,
