@@ -7,8 +7,13 @@
 
 import UIKit
 import PhotosUI
+import Combine
 
 class ProfileDataFormViewController: UIViewController {
+    
+    // View Model
+    private let viewModel = ProfileDataFormViewViewModel();
+    private var subscriptions: Set<AnyCancellable> = []
     
     // Scroll view
     private let scrollView: UIScrollView = {
@@ -98,7 +103,6 @@ class ProfileDataFormViewController: UIViewController {
         button.layer.masksToBounds = true
         button.layer.cornerRadius = 25
         button.isEnabled = false
-        button.alpha = 0.5
         return button;
     }()
 
@@ -126,17 +130,49 @@ class ProfileDataFormViewController: UIViewController {
         
         configureConstraints()
         
+        
+        // Submit Button Target
+        submitButton.addTarget(self, action: #selector(didTapSubmit), for: .touchUpInside)
+        
+        
         // Photo Upload
         avatarPlaceholderImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(didTapToUpload)))
         
+        bindViews()
+        
     }
     
-    // Did Tap To DIsmiss
-    @objc private func didTapToDismiss(){
-        view.endEditing(true)
+    // MARK: - Submit Button Hand
+    @objc private func didTapSubmit(){
+        viewModel.uploadAvatar()
     }
     
-    // Photo Upload
+    
+    // MARK: - Edting Changes
+    @objc private func didUpdateDisplayName(){
+        viewModel.displayName = displayNameTextField.text;
+        viewModel.validateUserProfileForm() // Validate User Profile Form
+    }
+    
+    @objc private func didUpdateUserName(){
+        viewModel.userName = userNameTextField.text;
+        viewModel.validateUserProfileForm() // Validate User Profile Form
+    }
+    
+    
+    // MARK: - BindView
+    private func bindViews() {
+        displayNameTextField.addTarget(self, action: #selector(didUpdateDisplayName), for: .editingChanged)
+        userNameTextField.addTarget(self, action: #selector(didUpdateUserName), for: .editingChanged)
+        viewModel.$isFormValid.sink { [weak self] buttonState in
+            self?.submitButton.isEnabled = buttonState
+        }
+        .store(in: &subscriptions)
+    }
+    
+
+    
+    // MARK: - Photo Upload
     @objc private func didTapToUpload(){
         var configuration = PHPickerConfiguration();
         configuration.filter = .images;
@@ -146,7 +182,12 @@ class ProfileDataFormViewController: UIViewController {
         present(picker, animated: true)
     }
     
-    // Constraints Configuration
+    // Did Tap To DIsmiss
+    @objc private func didTapToDismiss() {
+        view.endEditing(true)
+    }
+    
+    // MARK: - Constraints Configuration
     private func configureConstraints(){
         
         let scrollViewConstraints = [
@@ -231,6 +272,11 @@ extension ProfileDataFormViewController : UITextViewDelegate, UITextFieldDelegat
         }
     }
     
+    // Since BIO is textView -> DidChange method is written in Here
+    func textViewDidChange(_ textView: UITextView) {
+        viewModel.bio = textView.text;
+    }
+    
     // Text Field Did Begin Editing
     func textFieldDidBeginEditing(_ textField: UITextField) {
         scrollView.setContentOffset(CGPoint(x: 0, y: textField.frame.origin.y - 100), animated: true) // to stay in the view if the keyboard comes out
@@ -256,6 +302,8 @@ extension ProfileDataFormViewController: PHPickerViewControllerDelegate {
                     DispatchQueue.main.async {
                         self?.avatarPlaceholderImageView.image = image // update the avatar image placeholder
                         self?.avatarPlaceholderImageView.contentMode = .scaleAspectFill
+                        self?.viewModel.imageData = image
+                        self?.viewModel.validateUserProfileForm()
                     }
                 }
             }
