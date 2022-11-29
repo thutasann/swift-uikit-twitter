@@ -6,11 +6,15 @@
 //
 
 import UIKit
+import Combine
+import SDWebImage
 
 class ProfileViewController: UIViewController {
     
     
     private var isStatusBarHidden: Bool = true
+    private var viewModel = ProfileViewViewModel()
+    private var subscriptions : Set<AnyCancellable> = []
     
     // Status Bar at the Header
     private let statusBar : UIView = {
@@ -22,6 +26,10 @@ class ProfileViewController: UIViewController {
     }()
     
     
+    // Profile Header View
+    private lazy var headerView = ProfileTableViewHeader(frame: CGRect(x: 0, y: 0, width: profileTableView.frame.width, height: 400));
+    
+    
     // Profile Table View
     private let profileTableView : UITableView = {
         let tableView = UITableView();
@@ -29,7 +37,16 @@ class ProfileViewController: UIViewController {
         tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
     }()
+    
+    
+    // View Will
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        viewModel.retrieveUser()
+    }
 
+    
+    // View Did Load
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
@@ -39,8 +56,7 @@ class ProfileViewController: UIViewController {
         view.addSubview(profileTableView)
         
         view.addSubview(statusBar)
-        // Profile Header
-        let headerView = ProfileTableViewHeader(frame: CGRect(x: 0, y: 0, width: profileTableView.frame.width, height: 400))
+       
         profileTableView.delegate = self
         profileTableView.dataSource = self
         profileTableView.tableHeaderView = headerView
@@ -49,6 +65,23 @@ class ProfileViewController: UIViewController {
         navigationController?.navigationBar.isHidden = true
         
         configureConstraints()
+        
+        bindViews()
+    }
+    
+    // Bind View
+    private func bindViews(){
+        viewModel.$user.sink { [weak self] user in
+            guard let user = user else { return }
+            self?.headerView.displayNameLabel.text = user.displayName
+            self?.headerView.userNameLabel.text = user.username
+            self?.headerView.followerCountLabel.text = "\(user.followersCount)"
+            self?.headerView.followingCountLabel.text = "\(user.followingCount)"
+            self?.headerView.userBioLabel.text = user.bio
+            self?.headerView.profileAvatarImageView.sd_setImage(with: URL(string: user.avatarPath))
+        }
+        .store(in: &subscriptions)
+
     }
     
     // Constraints Configuration
