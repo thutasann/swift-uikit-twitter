@@ -9,6 +9,8 @@ import Foundation
 import Combine
 import UIKit
 import FirebaseStorage
+import FirebaseAuth
+import SwiftUI
 
 final class ProfileDataFormViewViewModel: ObservableObject{
 
@@ -20,8 +22,8 @@ final class ProfileDataFormViewViewModel: ObservableObject{
     @Published var avatarPath: String?
     @Published var imageData: UIImage?
     @Published var isFormValid: Bool = false
-    @Published var url: URL?
     @Published var error: String = ""
+    @Published var isOnboardingFinished: Bool = false
     
     
     // MARK: - Validate User Profile From
@@ -52,11 +54,60 @@ final class ProfileDataFormViewViewModel: ObservableObject{
                 StorageManager.shared.getDownloadURL(for: metaData.path)
             })
             .sink { [weak self] completion in
+                
+                switch completion {
+                case.failure(let error):
+                    print(error.localizedDescription)
+                    self?.error = error.localizedDescription
+                case .finished:
+                    self?.updateUserData()
+                }
+                
+            } receiveValue: { [weak self] url in
+                self?.avatarPath = url.absoluteString
+            }
+            .store(in: &subscriptions)
+
+    }
+    
+    
+    private func updateUserData(){
+        
+        guard let displayName = displayName else {
+            return
+        }
+        
+        guard let userName = userName else {
+            return
+        }
+
+        guard let bio = bio else {
+            return
+        }
+        
+        guard let avatarPath = avatarPath else {
+            return
+        }
+        
+        guard let id = Auth.auth().currentUser?.uid else { return }
+
+        
+        let updatedFields: [String: Any] = [
+            "displayName": displayName,
+            "userName": userName,
+            "bio": bio,
+            "avatarPath": avatarPath,
+            "isUserOnboarded": true
+        ]
+        
+        DatabaseManager.shared.collectionUsers(updateFields: updatedFields, for: id)
+            .sink { [weak self] completion in
                 if case .failure(let error) = completion{
+                    print(error.localizedDescription)
                     self?.error = error.localizedDescription
                 }
-            } receiveValue: { [weak self] url in
-                self?.url = url
+            } receiveValue: { [weak self] onboardingState in
+                self?.isOnboardingFinished = onboardingState
             }
             .store(in: &subscriptions)
 
